@@ -7,7 +7,10 @@ defmodule Engine.Slack.Spec do
     [
       {Engine.Slack, Engine.Slack.BotConfig.get(bot_name, token)},
       {Engine.Slack.HubHanlder, Engine.Slack.BotConfig.get(bot_name, token)},
-      {Slack.Bot, Engine.Slack.RequestHandler, Engine.Slack.BotConfig.keyword_config(bot_name, token), token, %{name: "#Engine.Slack.RequestHandler::#{bot_name}"}}
+      {Slack.Bot, Engine.Slack.RequestHandler,
+                  [name: "#Engine.Slack.RequestHandler::#{name}", token: token],
+                  token,
+                  %{name: "#Engine.Slack.RequestHandler::#{bot_name}"}}
     ]
   end
 end

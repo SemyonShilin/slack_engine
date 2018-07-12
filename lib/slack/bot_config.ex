@@ -5,10 +5,6 @@ defmodule Engine.Slack.BotConfig do
     config(name, token)
   end
 
-  defp keyword_config(name, token) do
-    [name: "#Engine.Slack.RequestHandler::#{name}", token: token]
-  end
-
   defp config(name, token) do
     %{
       name: name,
