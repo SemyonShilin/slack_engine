@@ -30,7 +30,7 @@ defmodule Engine.Slack.HubHanlder do
 #
 #    %{"data" => response} =
 #      %{data: message}
-#      |> Map.merge(%{platform: "telegram", uid: bot.uid})
+#      |> Map.merge(%{platform: "slack", uid: bot.uid})
 #      |> call_hub()
 #
 #    {:noreply, opts}

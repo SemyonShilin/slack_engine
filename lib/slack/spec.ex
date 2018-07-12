@@ -1,6 +1,6 @@
-defmodule Engine.Telegram.Spec do
+defmodule Engine.Slack.Spec do
   @moduledoc """
-    Speck for a telegram to run engine in the supervisor
+    Speck for a slack to run engine in the supervisor
   """
 
   def engine_spec(bot_name, token) do

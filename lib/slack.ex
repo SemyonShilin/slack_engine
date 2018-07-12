@@ -12,7 +12,7 @@ defmodule Engine.Slack do
   end
 
   def init(opts) do
-    BotLogger.info(:console, "Telegram bot #{opts.name} started.")
+    BotLogger.info(:console, "Slack bot #{opts.name} started.")
 
     {:ok, opts}
   end

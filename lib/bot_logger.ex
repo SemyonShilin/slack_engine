@@ -2,7 +2,7 @@ defmodule Engine.BotLogger do
   @moduledoc false
   require Logger
 
-#  @slack_engine Application.get_env(:slack_engine, Engine.Telegram)
+#  @slack_engine Application.get_env(:slack_engine, Engine.Slack)
 #
 #  def debug(message) do
 #    @slack_engine
