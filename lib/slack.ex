@@ -44,4 +44,14 @@ defmodule Engine.Slack do
     @slack_engine
     |> Keyword.get(:logger)
   end
+
+  def hub_client do
+    @slack_engine
+    |> Keyword.get(:hub_client)
+  end
+
+  def get_bot_fn do
+    @slack_engine
+    |> Keyword.get(:get_bot_fn)
+  end
 end
