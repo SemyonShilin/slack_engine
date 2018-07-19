@@ -13,7 +13,7 @@ defmodule Engine.Slack.HubHanlder do
   end
 
   def handle({_, _, state} = tuple) do
-    GenServer.cast(:"#Engine.Slack.HubHanlder::#{state[:name]}", tuple)  |> IO.inspect
+    GenServer.cast(:"#Engine.Slack.HubHanlder::#{state[:bot_name]}", tuple)
   end
 
   def handle_cast({%{text: text} = message, slack, state}, opts) do
