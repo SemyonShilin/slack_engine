@@ -25,11 +25,10 @@ defmodule Engine.Slack.RequestHandler do
 
   def handle_event(_, _, state), do: {:ok, state}
 
-  def handle_info({:message, message}, slack, state) do
-    Slack.logger().info("You have just sent message. #{message.channel} : #{message.text}")
+  def handle_info({:message, %{channel: channel, text: text} = _message}, slack, state) do
+    send_message(text, channel, slack)
 
-    send_message(message.text, message.channel, slack)
-
+    Slack.logger().info("You have just sent message. #{channel} : #{text}")
     {:ok, state}
   end
 
