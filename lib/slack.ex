@@ -31,10 +31,10 @@ defmodule Engine.Slack do
     {:noreply, state}
   end
 
-  def handle_cast({:message, _hub, message}, state) do
+  def handle_cast({:message, hub, message}, state) do
     RequestHandler.answer(
-      "#Engine.Slack.RequestHandler::#{state[:name]}",
-      {:message, message}
+      :"#Engine.Slack.RequestHandler::#{state[:name]}",
+      {:message, hub, message}
     )
 
     {:noreply, state}
