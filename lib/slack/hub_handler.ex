@@ -39,7 +39,11 @@ defmodule Engine.Slack.HubHanlder do
     reply_message(%{text: text, channel: channel}, slack)
 
     Enum.each(slash, fn(slash_list) ->
-      reply_message(%{text: "#{slash_list.command} #{slash_list.text}", channel: channel}, slack)
+      if Map.has_key?(slash_list, :command) do
+        reply_message(%{text: "#{slash_list.command} #{slash_list.text}", channel: channel}, slack)
+      else
+        reply_message(%{text: "#{slash_list.text} #{slash_list.url}", channel: channel}, slack)
+      end
     end)
   end
 
