@@ -6,7 +6,7 @@ defmodule Engine.Slack.HubHanlder do
   alias Engine.Slack
 
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, [name: :"#Engine.Slack.HubHanlder::#{opts[:name]}"])
+    GenServer.start_link(__MODULE__, opts, name: :"#Engine.Slack.HubHanlder::#{opts[:name]}")
   end
 
   def init(opts) do
@@ -19,6 +19,7 @@ defmodule Engine.Slack.HubHanlder do
 
   def handle_cast({%{text: text} = message, slack, state}, opts) do
     bot = adapter_bot().(opts.token)
+
     %{"data" => response} =
       %{data: message}
       |> Map.merge(%{platform: "slack", uid: bot.uid})
@@ -28,7 +29,7 @@ defmodule Engine.Slack.HubHanlder do
     |> Map.get("messages", [])
     |> parse_hub_response()
     |> Enum.filter(& &1)
-    |> Enum.each(fn (mess) ->
+    |> Enum.each(fn mess ->
       reply_message({mess, message.channel, slack})
     end)
 
@@ -38,9 +39,12 @@ defmodule Engine.Slack.HubHanlder do
   defp reply_message({%{text: text, slash: slash}, channel, slack}) do
     reply_message(%{text: text, channel: channel}, slack)
 
-    Enum.each(slash, fn(slash_list) ->
+    Enum.each(slash, fn slash_list ->
       if Map.has_key?(slash_list, :command) do
-        reply_message(%{text: "#{slash_list.command} #{slash_list.text}", channel: channel}, slack)
+        reply_message(
+          %{text: "#{slash_list.command} #{slash_list.text}", channel: channel},
+          slack
+        )
       else
         reply_message(%{text: "#{slash_list.text} #{slash_list.url}", channel: channel}, slack)
       end
@@ -71,7 +75,7 @@ defmodule Engine.Slack.HubHanlder do
     parse_hub_response(tail, [messages | formatted_messages])
   end
 
-  defp parse_hub_response([], updated_messages), do: updated_messages |> Enum.reverse
+  defp parse_hub_response([], updated_messages), do: updated_messages |> Enum.reverse()
 
   defp message_mapping do
     fn {k, v}, acc ->
@@ -86,11 +90,18 @@ defmodule Engine.Slack.HubHanlder do
   defp type_menu(v, acc) do
     with %{"type" => type} <- v do
       case type do
-        "inline"   -> ""
+        "inline" ->
+          ""
           Map.put(acc, :slash, format_menu_item(v))
-        "keyboard" -> ""
-        "auth"     -> ""
-        _          -> ""
+
+        "keyboard" ->
+          ""
+
+        "auth" ->
+          ""
+
+        _ ->
+          ""
       end
     end
   end
@@ -98,18 +109,19 @@ defmodule Engine.Slack.HubHanlder do
   defp format_menu_item(%{"items" => items}), do: format_menu_item(items, [])
 
   defp format_menu_item([%{"url" => url} = menu_item | tail], state) do
-    new_state =
-      [%{text: menu_item["name"], url: url}| state]
+    new_state = [%{text: menu_item["name"], url: url} | state]
     format_menu_item(tail, new_state)
   end
 
   defp format_menu_item([%{"code" => code} = menu_item | tail], state) do
-    new_state =
-      [%{text: menu_item["name"], command: "{#{code}}", response_type: "in_channel"} | state]
+    new_state = [
+      %{text: menu_item["name"], command: "{#{code}}", response_type: "in_channel"} | state
+    ]
+
     format_menu_item(tail, new_state)
   end
 
-  defp format_menu_item([], state), do: state |> Enum.reverse
+  defp format_menu_item([], state), do: state |> Enum.reverse()
 
   def call_hub do
     fn message ->
@@ -119,7 +131,7 @@ defmodule Engine.Slack.HubHanlder do
 
   defp adapter_bot() do
     with get_bot_fn <- Slack.get_bot_fn(),
-         {func, _}  <- Code.eval_string(get_bot_fn) do
+         {func, _} <- Code.eval_string(get_bot_fn) do
       func
     end
   end

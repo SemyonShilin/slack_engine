@@ -16,7 +16,9 @@ defmodule Engine.Slack.RequestHandler do
   end
 
   def handle_event(message = %{type: "message"}, slack, state) do
-    Slack.logger().info("You have just received message. #{format_request_for_log(message, slack)}")
+    Slack.logger().info(
+      "You have just received message. #{format_request_for_log(message, slack)}"
+    )
 
     HubHanlder.handle({message, slack, state})
 
@@ -25,11 +27,18 @@ defmodule Engine.Slack.RequestHandler do
 
   def handle_event(_, _, state), do: {:ok, state}
 
-  def handle_info({:message, _hub,  %{"data" => %{"messages" => messages, "chat" => %{"id" => id}}} = _message}, slack, state) do
+  def handle_info(
+        {:message, _hub,
+         %{"data" => %{"messages" => messages, "chat" => %{"id" => id}}} = _message},
+        slack,
+        state
+      ) do
     names =
       slack.users
       |> Enum.map(fn {key, val} -> val.name end)
-    IO.inspect names
+
+    IO.inspect(names)
+
     channel =
       slack.users
       |> Enum.find(fn {key, val} -> val.name == id end)
@@ -38,9 +47,12 @@ defmodule Engine.Slack.RequestHandler do
     messages
     |> HubHanlder.parse_hub_response()
     |> Enum.filter(& &1)
-    |> Enum.each(fn (mess) ->
+    |> Enum.each(fn mess ->
       send_message(mess.text, channel, slack)
-      Slack.logger().info("You have just sent message. #{find_user_name(channel, slack)} : #{mess.text}")
+
+      Slack.logger().info(
+        "You have just sent message. #{find_user_name(channel, slack)} : #{mess.text}"
+      )
     end)
 
     {:ok, state}
@@ -56,7 +68,7 @@ defmodule Engine.Slack.RequestHandler do
   def handle_info(_, _, state), do: {:ok, state}
 
   def handle_close(reason, _, state) do
-    IO.inspect reason
+    IO.inspect(reason)
     {:ok, state}
   end
 

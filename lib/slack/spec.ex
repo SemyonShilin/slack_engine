@@ -14,11 +14,14 @@ defmodule Engine.Slack.Spec do
   defp slack_bot_spec(%{bot_name: bot_name, token: token}) do
     %{
       id: Slack.Bot,
-      start: {Slack.Bot, :start_link,
-        [Engine.Slack.RequestHandler,
-          [name: :"#Engine.Slack.RequestHandler::#{bot_name}", token: token, bot_name: bot_name],
-          token,
-          %{name: :"#Engine.Slack.RequestHandler::#{bot_name}"}] }
+      start:
+        {Slack.Bot, :start_link,
+         [
+           Engine.Slack.RequestHandler,
+           [name: :"#Engine.Slack.RequestHandler::#{bot_name}", token: token, bot_name: bot_name],
+           token,
+           %{name: :"#Engine.Slack.RequestHandler::#{bot_name}"}
+         ]}
     }
   end
 end

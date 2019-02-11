@@ -10,7 +10,7 @@ defmodule Engine.Slack do
   @slack_engine Application.get_env(:slack_engine, Engine.Slack)
 
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts, [name: :"#Engine.Slack::#{opts.name}"])
+    GenServer.start_link(__MODULE__, opts, name: :"#Engine.Slack::#{opts.name}")
   end
 
   def init(opts) do
